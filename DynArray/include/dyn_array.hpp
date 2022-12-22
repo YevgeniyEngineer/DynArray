@@ -27,7 +27,61 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return array_[i];
     }
 
-    template <typename type> std::vector<T> operator^(type pow)
+    template <typename type> DynArray<C, T> operator^=(type pow)
+    {
+#pragma omp parallel for private(i) shared(array_, pow)
+        for (int i = 0; i < array_.size(); ++i)
+        {
+            array_[i] = std::pow(array_[i], pow);
+        }
+        return *this;
+    }
+
+    template <typename type> DynArray<C, T> operator*=(type num)
+    {
+        auto number = static_cast<T>(num);
+#pragma omp parallel for private(i) shared(array_, number)
+        for (int i = 0; i < array_.size(); ++i)
+        {
+            array_[i] *= number;
+        }
+        return *this;
+    }
+
+    template <typename type> DynArray<C, T> operator/=(type num)
+    {
+        auto number = static_cast<T>(num);
+#pragma omp parallel for private(i) shared(array_, number)
+        for (int i = 0; i < array_.size(); ++i)
+        {
+            array_[i] /= number;
+        }
+        return *this;
+    }
+
+    template <typename type> DynArray<C, T> operator+=(type num)
+    {
+        auto number = static_cast<T>(num);
+#pragma omp parallel for private(i) shared(array_, number)
+        for (int i = 0; i < array_.size(); ++i)
+        {
+            array_[i] += number;
+        }
+        return *this;
+    }
+
+    template <typename type> DynArray<C, T> operator-=(type num)
+    {
+        auto number = static_cast<T>(num);
+#pragma omp parallel for private(i) shared(array_, number)
+        for (int i = 0; i < array_.size(); ++i)
+        {
+            array_[i] -= number;
+        }
+        return *this;
+    }
+
+    template <typename type> DynArray<C, T> operator^(type pow)
     {
         std::vector<T> array_temp;
         array_temp.resize(array_.size());
@@ -36,10 +90,10 @@ template <typename C, typename T = typename C::value_type> class DynArray
         {
             array_temp[i] = std::pow(array_[i], pow);
         }
-        return array_temp;
+        return DynArray(array_temp);
     }
 
-    template <typename type> std::vector<T> operator*(type number)
+    template <typename type> DynArray<C, T> operator*(type number)
     {
         auto num = static_cast<T>(number);
         std::vector<T> array_temp;
@@ -49,10 +103,10 @@ template <typename C, typename T = typename C::value_type> class DynArray
         {
             array_temp[i] = array_[i] * num;
         }
-        return array_temp;
+        return DynArray(array_temp);
     }
 
-    template <typename type> std::vector<T> operator/(type number)
+    template <typename type> DynArray<C, T> operator/(type number)
     {
         auto num = static_cast<T>(number);
         std::vector<T> array_temp;
@@ -62,10 +116,10 @@ template <typename C, typename T = typename C::value_type> class DynArray
         {
             array_temp[i] = array_[i] / num;
         }
-        return array_temp;
+        return DynArray(array_temp);
     }
 
-    template <typename type> std::vector<T> operator+(type number)
+    template <typename type> DynArray<C, T> operator+(type number)
     {
         auto num = static_cast<T>(number);
         std::vector<T> array_temp;
@@ -75,10 +129,10 @@ template <typename C, typename T = typename C::value_type> class DynArray
         {
             array_temp[i] = array_[i] + num;
         }
-        return array_temp;
+        return DynArray(array_temp);
     }
 
-    template <typename type> std::vector<T> operator-(type number)
+    template <typename type> DynArray<C, T> operator-(type number)
     {
         auto num = static_cast<T>(number);
         std::vector<T> array_temp;
@@ -88,7 +142,7 @@ template <typename C, typename T = typename C::value_type> class DynArray
         {
             array_temp[i] = array_[i] - num;
         }
-        return array_temp;
+        return DynArray(array_temp);
     }
 
     template <typename type> friend std::ostream &operator<<(std::ostream &os, const DynArray<type> &obj)
@@ -101,7 +155,7 @@ template <typename C, typename T = typename C::value_type> class DynArray
             if (i != v.size() - 1)
                 os << ", ";
         }
-        os << "]\n";
+        os << "]";
         return os;
     }
 
