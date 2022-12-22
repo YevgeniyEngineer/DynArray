@@ -51,12 +51,15 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return *this;
     }
 
-    T &operator[](int i)
+    // for integral types only
+    template <typename Integer, std::enable_if_t<std::is_integral<Integer>::value, bool> = true>
+    T &operator[](Integer i)
     {
         return array_[i];
     }
 
-    const T &operator[](int i) const
+    template <typename Integer, std::enable_if_t<std::is_integral<Integer>::value, bool> = true>
+    const T &operator[](Integer i) const
     {
         return array_[i];
     }

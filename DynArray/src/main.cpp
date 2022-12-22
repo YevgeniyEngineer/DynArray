@@ -45,6 +45,8 @@ int main()
 
     arr.push_back(5);
     std::cout << arr << std::endl;
+    std::cout << arr[5] << std::endl; // TODO check bounds
+    // std::cout << arr[5.5] << std::endl;  // compiler error
 
     return (0);
 }
