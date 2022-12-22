@@ -24,5 +24,7 @@ int main()
     auto arr_sub = arr - 15;
     std::cout << arr_sub[0] << " " << arr_sub[1] << " " << arr_sub[2] << std::endl;
 
+    std::cout << arr << std::endl;
+
     return (0);
 }

@@ -91,6 +91,20 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return array_temp;
     }
 
+    template <typename type> friend std::ostream &operator<<(std::ostream &os, const DynArray<type> &obj)
+    {
+        const auto &v = obj.array_;
+        os << "[";
+        for (int i = 0; i < v.size(); ++i)
+        {
+            os << v[i];
+            if (i != v.size() - 1)
+                os << ", ";
+        }
+        os << "]\n";
+        return os;
+    }
+
   private:
     std::vector<T> array_;
 };
