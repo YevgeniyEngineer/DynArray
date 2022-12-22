@@ -43,5 +43,8 @@ int main()
     std::cout << arr << std::endl;
     std::cout << arr2 << std::endl;
 
+    arr.push_back(5);
+    std::cout << arr << std::endl;
+
     return (0);
 }

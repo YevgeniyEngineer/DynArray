@@ -193,6 +193,16 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return os;
     }
 
+    void push_back(T &&value)
+    {
+        array_.push_back(std::move(value));
+    }
+
+    void push_back(const T &value)
+    {
+        array_.push_back(value);
+    }
+
   private:
     std::vector<T> array_;
 };
