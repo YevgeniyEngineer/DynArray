@@ -15,7 +15,41 @@ template <typename C, typename T = typename C::value_type> class DynArray
 {
   public:
     DynArray(const C &container) : array_(container.begin(), container.end()){};
+    DynArray<C, T>(DynArray<C, T> &&other) noexcept
+    {
+        if (this == &other)
+        {
+            return;
+        }
+        this->array_ = std::move(other.array_);
+    }
+
     ~DynArray() = default;
+
+    // copy assignment
+    DynArray<C, T> &operator=(const DynArray<C, T> &other)
+    {
+        // Guard self assignment
+        if (this == &other)
+        {
+            return *this;
+        }
+        this->array_ = other->array_;
+        return *this;
+    }
+
+    // move assignment
+    DynArray<C, T> &operator=(DynArray<C, T> &&other) noexcept
+    {
+        // Guard self assignment
+        if (this == &other)
+        {
+            return *this;
+        }
+
+        this->array_ = std::move(other->array_);
+        return *this;
+    }
 
     T &operator[](int i)
     {
@@ -27,7 +61,7 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return array_[i];
     }
 
-    template <typename type> DynArray<C, T> operator^=(type pow)
+    template <typename type> DynArray<C, T> &operator^=(type pow)
     {
 #pragma omp parallel for private(i) shared(array_, pow)
         for (int i = 0; i < array_.size(); ++i)
@@ -37,7 +71,7 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return *this;
     }
 
-    template <typename type> DynArray<C, T> operator*=(type num)
+    template <typename type> DynArray<C, T> &operator*=(type num)
     {
         auto number = static_cast<T>(num);
 #pragma omp parallel for private(i) shared(array_, number)
@@ -48,7 +82,7 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return *this;
     }
 
-    template <typename type> DynArray<C, T> operator/=(type num)
+    template <typename type> DynArray<C, T> &operator/=(type num)
     {
         auto number = static_cast<T>(num);
 #pragma omp parallel for private(i) shared(array_, number)
@@ -59,7 +93,7 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return *this;
     }
 
-    template <typename type> DynArray<C, T> operator+=(type num)
+    template <typename type> DynArray<C, T> &operator+=(type num)
     {
         auto number = static_cast<T>(num);
 #pragma omp parallel for private(i) shared(array_, number)
@@ -70,7 +104,7 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return *this;
     }
 
-    template <typename type> DynArray<C, T> operator-=(type num)
+    template <typename type> DynArray<C, T> &operator-=(type num)
     {
         auto number = static_cast<T>(num);
 #pragma omp parallel for private(i) shared(array_, number)

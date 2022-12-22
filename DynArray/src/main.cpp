@@ -39,5 +39,9 @@ int main()
     arr ^= 5;
     std::cout << arr << std::endl;
 
+    auto arr2 = std::move(arr);
+    std::cout << arr << std::endl;
+    std::cout << arr2 << std::endl;
+
     return (0);
 }
