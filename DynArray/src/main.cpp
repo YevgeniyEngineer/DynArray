@@ -30,13 +30,13 @@ int main()
     arr -= 5;
     std::cout << arr << std::endl;
 
-    arr *= 5;
+    arr *= 100;
     std::cout << arr << std::endl;
 
     arr /= 5;
     std::cout << arr << std::endl;
 
-    arr ^= 5;
+    arr ^= 2;
     std::cout << arr << std::endl;
 
     auto arr2 = std::move(arr);

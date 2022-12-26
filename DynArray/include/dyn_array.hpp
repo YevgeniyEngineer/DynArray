@@ -3,7 +3,9 @@
 
 // #include <eigen3/Eigen/Dense>
 
+#include <algorithm>
 #include <cmath>
+#include <execution>
 #include <iostream>
 #include <iterator>
 #include <ostream>
@@ -66,119 +68,81 @@ template <typename C, typename T = typename C::value_type> class DynArray
 
     template <typename type> DynArray<C, T> &operator^=(type pow)
     {
-#pragma omp parallel for private(i) shared(array_, pow)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_[i] = std::pow(array_[i], pow);
-        }
+        std::for_each(std::execution::par, array_.begin(), array_.end(),
+                      [&](auto &element) { element = std::pow(element, pow); });
         return *this;
     }
 
     template <typename type> DynArray<C, T> &operator*=(type num)
     {
         auto number = static_cast<T>(num);
-#pragma omp parallel for private(i) shared(array_, number)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_[i] *= number;
-        }
+        std::for_each(std::execution::par, array_.begin(), array_.end(), [&](auto &element) { element *= number; });
         return *this;
     }
 
     template <typename type> DynArray<C, T> &operator/=(type num)
     {
         auto number = static_cast<T>(num);
-#pragma omp parallel for private(i) shared(array_, number)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_[i] /= number;
-        }
+        std::for_each(std::execution::par, array_.begin(), array_.end(), [&](auto &element) { element /= number; });
         return *this;
     }
 
     template <typename type> DynArray<C, T> &operator+=(type num)
     {
         auto number = static_cast<T>(num);
-#pragma omp parallel for private(i) shared(array_, number)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_[i] += number;
-        }
+        std::for_each(std::execution::par, array_.begin(), array_.end(), [&](auto &element) { element += number; });
         return *this;
     }
 
     template <typename type> DynArray<C, T> &operator-=(type num)
     {
         auto number = static_cast<T>(num);
-#pragma omp parallel for private(i) shared(array_, number)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_[i] -= number;
-        }
+        std::for_each(std::execution::par, array_.begin(), array_.end(), [&](auto &element) { element -= number; });
         return *this;
     }
 
     template <typename type> DynArray<C, T> operator^(type pow)
     {
-        std::vector<T> array_temp;
-        array_temp.resize(array_.size());
-#pragma omp parallel for private(i) shared(array_, array_temp, pow)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_temp[i] = std::pow(array_[i], pow);
-        }
+        std::vector<T> array_temp(array_.begin(), array_.end());
+        auto number = static_cast<T>(pow);
+        std::for_each(std::execution::par, array_temp.begin(), array_temp.end(),
+                      [&](auto &element) { element = std::pow(element, number); });
         return DynArray(array_temp);
     }
 
-    template <typename type> DynArray<C, T> operator*(type number)
+    template <typename type> DynArray<C, T> operator*(type num)
     {
-        auto num = static_cast<T>(number);
-        std::vector<T> array_temp;
-        array_temp.resize(array_.size());
-#pragma omp parallel for private(i) shared(array_, array_temp, num)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_temp[i] = array_[i] * num;
-        }
+        std::vector<T> array_temp(array_.begin(), array_.end());
+        auto number = static_cast<T>(num);
+        std::for_each(std::execution::par, array_temp.begin(), array_temp.end(),
+                      [&](auto &element) { element *= number; });
         return DynArray(array_temp);
     }
 
-    template <typename type> DynArray<C, T> operator/(type number)
+    template <typename type> DynArray<C, T> operator/(type num)
     {
-        auto num = static_cast<T>(number);
-        std::vector<T> array_temp;
-        array_temp.resize(array_.size());
-#pragma omp parallel for private(i) shared(array_, array_temp, num)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_temp[i] = array_[i] / num;
-        }
+        std::vector<T> array_temp(array_.begin(), array_.end());
+        auto number = static_cast<T>(num);
+        std::for_each(std::execution::par, array_temp.begin(), array_temp.end(),
+                      [&](auto &element) { element /= number; });
         return DynArray(array_temp);
     }
 
-    template <typename type> DynArray<C, T> operator+(type number)
+    template <typename type> DynArray<C, T> operator+(type num)
     {
-        auto num = static_cast<T>(number);
-        std::vector<T> array_temp;
-        array_temp.resize(array_.size());
-#pragma omp parallel for private(i) shared(array_, array_temp, num)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_temp[i] = array_[i] + num;
-        }
+        std::vector<T> array_temp(array_.begin(), array_.end());
+        auto number = static_cast<T>(num);
+        std::for_each(std::execution::par, array_temp.begin(), array_temp.end(),
+                      [&](auto &element) { element += number; });
         return DynArray(array_temp);
     }
 
-    template <typename type> DynArray<C, T> operator-(type number)
+    template <typename type> DynArray<C, T> operator-(type num)
     {
-        auto num = static_cast<T>(number);
-        std::vector<T> array_temp;
-        array_temp.resize(array_.size());
-#pragma omp parallel for private(i) shared(array_, array_temp, num)
-        for (int i = 0; i < array_.size(); ++i)
-        {
-            array_temp[i] = array_[i] - num;
-        }
+        std::vector<T> array_temp(array_.begin(), array_.end());
+        auto number = static_cast<T>(num);
+        std::for_each(std::execution::par, array_temp.begin(), array_temp.end(),
+                      [&](auto &element) { element -= number; });
         return DynArray(array_temp);
     }
 
