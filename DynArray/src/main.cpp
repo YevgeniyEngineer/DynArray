@@ -48,5 +48,17 @@ int main()
     std::cout << arr[5] << std::endl; // TODO check bounds
     // std::cout << arr[5.5] << std::endl;  // compiler error
 
+    for (int i = 0; i < 5; i++)
+    {
+        arr.push_back(i * 2);
+    }
+    std::cout << "Mean of " << arr << " values: " << arr.mean() << std::endl;
+    std::cout << "Median of " << arr << " values: " << arr.median() << std::endl;
+    std::cout << "Min of " << arr << " values: " << arr.min() << std::endl;
+    std::cout << "Max of " << arr << " values: " << arr.max() << std::endl;
+
+    auto minmax = arr.minmax();
+    std::cout << "Min/Max of " << arr << " values: " << minmax.first << " " << minmax.second << std::endl;
+
     return (0);
 }

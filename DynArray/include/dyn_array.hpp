@@ -8,6 +8,7 @@
 #include <execution>
 #include <iostream>
 #include <iterator>
+#include <numeric>
 #include <ostream>
 #include <type_traits>
 #include <utility>
@@ -158,6 +159,40 @@ template <typename C, typename T = typename C::value_type> class DynArray
         }
         os << "]";
         return os;
+    }
+
+    double mean()
+    {
+        auto sum = std::reduce(std::execution::par, array_.begin(), array_.end());
+        return static_cast<double>(sum) / static_cast<double>(array_.size());
+    }
+
+    double median()
+    {
+        std::vector<T> arr(array_.begin(), array_.end());
+        std::stable_sort(arr.begin(), arr.end());
+        const auto &size = arr.size();
+        if (size % 2 != 0)
+        {
+            return static_cast<double>(arr[size / 2]);
+        }
+        return static_cast<double>(arr[(size - 1) / 2] + arr[size / 2]) / 2.0;
+    }
+
+    T min()
+    {
+        return *std::min_element(array_.begin(), array_.end());
+    }
+
+    T max()
+    {
+        return *std::max_element(array_.begin(), array_.end());
+    }
+
+    std::pair<T, T> minmax()
+    {
+        auto result = std::minmax_element(array_.begin(), array_.end());
+        return std::make_pair(*result.first, *result.second);
     }
 
     void push_back(T &&value)
