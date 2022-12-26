@@ -167,6 +167,17 @@ template <typename C, typename T = typename C::value_type> class DynArray
         return static_cast<double>(sum) / static_cast<double>(array_.size());
     }
 
+    double stddev()
+    {
+        auto mean = this->mean();
+        double var = 0.0;
+        for (std::size_t i = 0; i < array_.size(); ++i)
+        {
+            var += std::pow(array_[i] - mean, 2);
+        }
+        return std::sqrt(var / static_cast<double>(array_.size()));
+    }
+
     double median()
     {
         std::vector<T> arr(array_.begin(), array_.end());
